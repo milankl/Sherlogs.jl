@@ -25,7 +25,18 @@ julia> lb = return_logbook()
  0x000000000000008c
                   ⋮
 ```
-`lb` is now a bitpattern histogram based on `Float16` (by default). This tells us for example that the zero bitpattern `0x00...00` (the first entry of `lb`) occurs `0x103f` = 4159 times in L96. 
+`lb` is now a bitpattern histogram based on `Float16` (by default). This tells us for example that  0 - the zero bitpattern `0x00...00` (i.e. the first entry of `lb`) occured `0x103f` = 4159 times in the execution of L96. Use `return_logbook` to retrieve the bitpattern histogram, use `reset_logbook()` to set the counters back to 0. Other 16bit number formats that are used as bins for the histogram can be used by specifying the parametric type `Sherlog64{T}`
+```julia
+julia> using SoftPosit
+julia> L96(Sherlog64{Posit16})
+julia> lb = return_logbook()
+julia> lb = return_logbook()
+65536-element Array{UInt64,1}:
+ 0x0000000000000503
+ 0x000000000000081e
+ 0x0000000000000187
+                  ⋮
+ ```
 
 # Installation
 ```julia
