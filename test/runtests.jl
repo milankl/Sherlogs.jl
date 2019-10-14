@@ -1,4 +1,4 @@
-using .Sherlogs
+using Sherlogs
 using Test
 
 n = 100
