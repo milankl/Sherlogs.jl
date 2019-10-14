@@ -12,5 +12,5 @@ end
 
 """Count arithmetic result in logbook."""
 function logit(::Type{T},x::Float64) where {T<:AbstractFloat}
-    logbook[reinterpret(UInt16,T(x)) + one(UInt16)] += 1
+    logbook[reinterpret(UInt16,T(x)) + 1] += 1
 end
