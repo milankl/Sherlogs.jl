@@ -14,3 +14,8 @@ end
 function logit(::Type{T},x::Float64) where {T<:AbstractFloat}
     logbook[reinterpret(UInt16,T(x)) + 1] += 1
 end
+
+"""Count arithmetic result in logbook."""
+function logit(::Type{T},x::Float32) where {T<:AbstractFloat}
+    logbook[reinterpret(UInt16,T(x)) + 1] += 1
+end
