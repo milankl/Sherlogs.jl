@@ -32,13 +32,23 @@ julia> lb = return_logbook()
 julia> using SoftPosit
 julia> L96(Sherlog64{Posit16})
 julia> lb = return_logbook()
-julia> lb = return_logbook()
 65536-element Array{UInt64,1}:
  0x0000000000000503
  0x000000000000081e
  0x0000000000000187
                   ⋮
  ```
+ 
+# Example bitpattern histogram
+```julia
+julia> using PyPlot
+julia> plot(lb)
+```
+This is the bitpattern histogram for normally distributed data, N(0,3), once represented with `Float16`. The x-axis is ranging from bitpattern `0x0000` to `0xffff` but for readability relabelled with the respective decimal numbers. `NaN`s are marked in red. The entropy [bit] is denoted with `H`. A unifrom distribution has maximum entropy of 16bit.
+
+![bitpattern](figs/bitpatternhist.png?raw=true "Bitpattern Histogram")
+
+ 
 # Performance
 
 Logging the arithmetic results comes with overhead (the allocations are just preallocations).
