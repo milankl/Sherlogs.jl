@@ -41,13 +41,12 @@ julia> lb = return_logbook()
  
 # Example bitpattern histogram
 ```julia
-julia> using PyPlot
+julia> using PyPlot, StatsBase
 julia> plot(lb)
+julia> H = entropy(lb/sum(lb),2)
 ```
-This is the bitpattern histogram for normally distributed data, N(0,3), once represented with `Float16`. The x-axis is ranging from bitpattern `0x0000` to `0xffff` but for readability relabelled with the respective decimal numbers. `NaN`s are marked in red. The entropy [bit] is denoted with `H`. A unifrom distribution has maximum entropy of 16bit.
-
 ![bitpattern](figs/bitpatternhist.png?raw=true "Bitpattern Histogram")
-
+This is the bitpattern histogram for normally distributed data, N(0,3), once represented with `Float16`. The x-axis is ranging from bitpattern `0x0000` to `0xffff` but for readability relabelled with the respective decimal numbers. `NaN`s are marked in red. The entropy [bit] is denoted with `H`. A uniform distribution has maximum entropy of 16bit.
  
 # Performance
 
@@ -59,7 +58,7 @@ julia> @btime L96(Float64,N=100000);
 julia> @btime L96(Sherlog64,N=100000);
   1.184 s (200021 allocations: 97.66 MiB)
 ```
-which depend on the number system used for binning
+which depends on the number system used for binning
 ```julia
 julia> using SoftPosit
 julia> @btime L96(Sherlog64{Posit16},N=100000);
