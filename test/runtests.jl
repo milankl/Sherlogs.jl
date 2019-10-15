@@ -5,8 +5,8 @@ n = 100
 
 @testset "Compare to Float64" begin
 
-    X = randn(n)
-    Y = randn(n)
+    X = randn(Float64,n)
+    Y = randn(Float64,n)
 
     for i in 1:n                # ADDITION
         r = X[i] + Y[i]
@@ -36,8 +36,8 @@ end
 
 @testset "Compare to Float32" begin
 
-    X = randn(n)
-    Y = randn(n)
+    X = randn(Float32,n)
+    Y = randn(Float32,n)
 
     for i in 1:n                # ADDITION
         r = X[i] + Y[i]
@@ -77,7 +77,7 @@ end
     reset_logbook()
     a = Sherlog64(1.0)
     for i in 1:n
-        a + randn()         # promotion included
+        a + randn(Float64)         # promotion included
     end
     lb = return_logbook()
     @test n == sum(lb)
@@ -95,7 +95,7 @@ end
     reset_logbook()
     a = Sherlog32(1.0)
     for i in 1:n
-        a + randn()         # promotion included
+        a + randn(Float32)         # promotion included
     end
     lb = return_logbook()
     @test n == sum(lb)
