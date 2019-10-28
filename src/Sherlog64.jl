@@ -9,11 +9,10 @@ Base.Float64(x::Sherlog64) = x.val
 Base.Float32(x::Sherlog64) = Float32(x.val)
 Base.Float16(x::Sherlog64) = Float16(x.val)
 
-Sherlog64(x::Float64) = Sherlog64{Float16}(x)
-Sherlog64(x::Float32) = Sherlog64{Float16}(Float64(x))
-Sherlog64(x::Float16) = Sherlog64{Float16}(Float64(x))
+Sherlog64(x::AbstractFloat) = Sherlog64{Float16}(x)
+Sherlog64(x::Integer) = Sherlog64{Float16}(x)
 
-Sherlog64(x::Integer) = Sherlog64{Float16}(Float64(x))
+Base.oneunit(::Type{Sherlog64{T}}) where {T<:AbstractFloat} = Sherlog64{T}(1)
 
 Base.promote_rule(::Type{Int64},::Type{Sherlog64{T}}) where T = Sherlog64
 Base.promote_rule(::Type{Int32},::Type{Sherlog64{T}}) where T = Sherlog64
@@ -25,6 +24,8 @@ Base.promote_rule(::Type{Float16},::Type{Sherlog64{T}}) where T = Sherlog64
 
 bitstring(x::Sherlog64) = bitstring(x.val)
 Base.show(io::IO,x::Sherlog64) = print(io,string(x.val))
+
+Base.eps(::Type{Sherlog64{T}}) where {T<:AbstractFloat} = eps(Float64)
 
 function +(x::Sherlog64{T},y::Sherlog64{T}) where T
     r = x.val + y.val

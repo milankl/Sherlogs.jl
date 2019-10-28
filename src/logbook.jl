@@ -11,11 +11,21 @@ function set_logbook(x::Array{UInt64,1})
 end
 
 """Count arithmetic result in logbook."""
-function logit(::Type{T},x::Float64) where {T<:AbstractFloat}
+function logit(::Type{T},x::AbstractFloat) where {T<:AbstractFloat}
     logbook[reinterpret(UInt16,T(x)) + 1] += 1
 end
-
-"""Count arithmetic result in logbook."""
-function logit(::Type{T},x::Float32) where {T<:AbstractFloat}
-    logbook[reinterpret(UInt16,T(x)) + 1] += 1
-end
+#
+# """Count arithmetic result in logbook."""
+# function logit(::Type{T},x::Float32) where {T<:AbstractFloat}
+#     logbook[reinterpret(UInt16,T(x)) + 1] += 1
+# end
+#
+# """Count arithmetic result in logbook."""
+# function logit(::Type{T},x::Float16) where {T<:AbstractFloat}
+#     logbook[reinterpret(UInt16,T(x)) + 1] += 1
+# end
+#
+# """Count arithmetic result in logbook."""
+# function logit(::Type{T},x::Float32) where {T<:AbstractFloat}
+#     logbook[reinterpret(UInt16,T(x)) + 1] += 1
+# end
