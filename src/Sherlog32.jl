@@ -1,5 +1,5 @@
 struct Sherlog32{T<:AbstractFloat} <: AbstractSherlog    # T is the bitpattern type for logging
-    val::Float32                                         # the value is always Float64
+    val::Float32                                         # the value is always Float32
 end
 
 Base.UInt32(x::Sherlog32) = reinterpret(UInt32,x.val)
@@ -7,11 +7,10 @@ Base.Float32(x::Sherlog32) = x.val
 Base.Float64(x::Sherlog32) = Float64(x.val)
 Base.Float16(x::Sherlog32) = Float16(x.val)
 
-Sherlog32(x::Float64) = Sherlog32{Float16}(Float32(x))
-Sherlog32(x::Float32) = Sherlog32{Float16}(x)
-Sherlog32(x::Float16) = Sherlog32{Float16}(Float32(x))
-
+Sherlog32(x::AbstractFloat) = Sherlog32{Float16}(x)
 Sherlog32(x::Integer) = Sherlog32{Float16}(Float32(x))
+
+Base.oneunit(::Type{Sherlog32{T}}) where {T<:AbstractFloat} = Sherlog32{T}(1)
 
 Base.promote_rule(::Type{Int64},::Type{Sherlog32{T}}) where T = Sherlog32
 Base.promote_rule(::Type{Int32},::Type{Sherlog32{T}}) where T = Sherlog32
@@ -23,6 +22,8 @@ Base.promote_rule(::Type{Float16},::Type{Sherlog32{T}}) where T = Sherlog32
 
 bitstring(x::Sherlog32) = bitstring(x.val)
 Base.show(io::IO,x::Sherlog32) = print(io,string(x.val))
+
+Base.eps(::Type{Sherlog32{T}}) where {T<:AbstractFloat} = eps(Float32)
 
 function +(x::Sherlog32{T},y::Sherlog32{T}) where T
     r = x.val + y.val
