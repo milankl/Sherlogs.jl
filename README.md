@@ -15,40 +15,32 @@ A 16bit version is provided as `Sherlog16{T}`, which uses `T` for computations a
 
 # Example
 
-Using a type-flexible algorithm like [Lorenz96](https://github.com/milankl/Lorenz96.jl)
+What are the numbers that occur when solving a linear equation system?
+
 ```julia
 julia> using Sherlogs
-julia> using Lorenz96
-julia> X = L96(Sherlog64);
+julia> A = Sherlog64.(rand(1000,1000));
+julia> b = Sherlog64.(rand(1000));
+julia> x = A\b;
 julia> lb = return_logbook()
 65536-element Array{UInt64,1}:
- 0x000000000000103f
- 0x00000000000000d0
- 0x00000000000000f3
- 0x00000000000000ba
- 0x000000000000008c
+ 0x00000000000004cf
+ 0x0000000000000076
+ 0x00000000000000f9
+ 0x000000000000010e
+ 0x0000000000000127
+ 0x00000000000000fb
+ 0x000000000000010f
                   ⋮
 ```
-`lb` is now a bitpattern histogram based on `Float16` (by default). This tells us for example that  0 - the zero bitpattern `0x00...00` (i.e. the first entry of `lb`) occured `0x103f` = 4159 times in the execution of L96. Use `return_logbook()` to retrieve the bitpattern histogram, use `reset_logbook()` to set the counters back to 0. Other 16bit number formats that are used as bins for the histogram can be used by specifying the parametric type `Sherlog64{T}`
-```julia
-julia> using SoftPosit
-julia> L96(Sherlog64{Posit16})
-julia> lb = return_logbook()
-65536-element Array{UInt64,1}:
- 0x0000000000000503
- 0x000000000000081e
- 0x0000000000000187
-                  ⋮
- ```
+`lb` is now a Float16 (by default) bitpattern histogram. This tells us for example that  0 - the zero bitpattern `0x00...00` (i.e. the first entry of `lb`) occured `0x04cf` = 1231 times in the LU decomposition (which is used in the \\-operation). Use `return_logbook()` to retrieve the bitpattern histogram, use `reset_logbook()` to set the counters back to 0. Other 16bit number formats that are used as bins for the histogram can be used by specifying the parametric type `Sherlog64{T}`.
 
 # Example bitpattern histogram
-```julia
-julia> using PyPlot, StatsBase
-julia> plot(lb)
-julia> H = entropy(lb/sum(lb),2)
-```
-![bitpattern](figs/bitpatternhist.png?raw=true "Bitpattern Histogram")
-This is the bitpattern histogram for normally distributed data, N(0,3), once represented with `Float16`. The x-axis is ranging from bitpattern `0x0000` to `0xffff` but for readability relabelled with the respective decimal numbers. `NaN`s are marked in red. The entropy [bit] is denoted with `H`. A uniform distribution has maximum entropy of 16bit.
+([script](https://github.com/milankl/example/matrix_solve.jl))
+
+![bitpattern](figs/matrixsolve.png?raw=true "Bitpattern Histogram")
+This is the bitpattern histogram for the uniformly distributed U(0,1) input data, once represented with `Float16` (blue). Using `Sherlog64` inside the solver `A\b`, creates a bitpattern histogram for that algorithm (LU-decomposition) (orange).
+The x-axis is ranging from bitpattern `0x0000` to `0xffff` but for readability relabelled with the respective decimal numbers. The entropy is denoted with `H`. A uniform distribution has maximum entropy of 16bit.
 
 # Performance
 
