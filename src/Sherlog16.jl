@@ -7,7 +7,6 @@ Base.Float64(x::Sherlog16) = Float64(x.val)
 Base.Float32(x::Sherlog16) = Float32(x.val)
 Base.Float16(x::Sherlog16) = Float16(x.val)
 
-#TODO there is some amiguitiy between here and the struct defintion
 Sherlog16(x::T) where {T<:AbstractFloat} = Sherlog16{Float16}(x)
 Sherlog16(x::Integer) = Sherlog16{Float16}(Float16(x))
 
