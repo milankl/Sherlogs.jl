@@ -1,9 +1,11 @@
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://img.shields.io/badge/repo_status-active-brightgreen?style=flat-square)](https://www.repostatus.org/#active)
-[![Travis](https://img.shields.io/travis/com/milankl/Sherlogs.jl?label=Linux%20%26%20osx&logo=travis&style=flat-square)](https://travis-ci.com/milankl/Sherlogs.jl)
-[![AppVeyor](https://img.shields.io/appveyor/ci/milankl/Sherlogs-jl?label=Windows&logo=appveyor&logoColor=white&style=flat-square)](https://ci.appveyor.com/project/milankl/Sherlogs-jl)
-[![Cirrus CI](https://img.shields.io/cirrus/github/milankl/Sherlogs.jl?label=FreeBSD&logo=cirrus-ci&logoColor=white&style=flat-square)](https://cirrus-ci.com/github/milankl/Sherlogs.jl)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://img.shields.io/badge/repo_status-active-brightgreen)](https://www.repostatus.org/#active)
+[![Travis](https://img.shields.io/travis/com/milankl/Sherlogs.jl?label=Linux%20%26%20osx&logo=travis)](https://travis-ci.com/milankl/Sherlogs.jl)
+[![AppVeyor](https://img.shields.io/appveyor/ci/milankl/Sherlogs-jl?label=Windows&logo=appveyor&logoColor=white)](https://ci.appveyor.com/project/milankl/Sherlogs-jl)
+[![Cirrus CI](https://img.shields.io/cirrus/github/milankl/Sherlogs.jl?label=FreeBSD&logo=cirrus-ci&logoColor=white)](https://cirrus-ci.com/github/milankl/Sherlogs.jl)
+[![DOI](https://zenodo.org/badge/214412644.svg)](https://zenodo.org/badge/latestdoi/214412644)
 
 # Sherlogs.jl
+
 If Sherlock Holmes was a number format.
 
 Sherlogs.jl provides a number format `Sherlog64` that behaves like `Float64`, but inspects your code by logging all arithmetic results into a 16bit bitpattern histogram. On the fly.
