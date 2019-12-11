@@ -42,7 +42,7 @@ julia> lb = return_logbook()
 ![bitpattern](figs/matrixsolve.png?raw=true "Bitpattern Histogram")
 
 This is the bitpattern histogram for the uniformly distributed U(0,1) input data, once represented with `Float16` (blue). Using `Sherlog64` inside the solver `A\b`, creates a bitpattern histogram for that algorithm (LU-decomposition) (orange).
-The x-axis is ranging from bitpattern `0x0000` to `0xffff` but for readability relabelled with the respective decimal numbers. The entropy is denoted with `H`. A uniform distribution has maximum entropy of 16bit. The script for this example can be found [here](https://github.com/milankl/example/matrix_solve.jl))
+The x-axis is ranging from bitpattern `0x0000` to `0xffff` but for readability relabelled with the respective decimal numbers. The entropy is denoted with `H`. A uniform distribution has maximum entropy of 16bit. The script for this example can be found [here](https://github.com/milankl/Sherlogs.jl/blob/master/example/matrix_solve.jl))
 
 # Performance
 
