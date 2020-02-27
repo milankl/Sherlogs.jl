@@ -1,52 +1,73 @@
-struct Sherlog32{T<:AbstractFloat} <: AbstractSherlog    # T is the bitpattern type for logging
-    val::Float32                                         # the value is always Float32
+struct Sherlog32{T<:AbstractFloat,i} <: AbstractSherlog     # T is the bitpattern type for logging, i is the logbook #
+    val::Float32                                            # the value is always Float32
 end
 
-Base.UInt32(x::Sherlog32) = reinterpret(UInt32,x.val)
-Base.Float32(x::Sherlog32) = x.val
+# conversions back from Sherlog32
+Base.UInt64(x::Sherlog32) = reinterpret(UInt32,x.val)
 Base.Float64(x::Sherlog32) = Float64(x.val)
+Base.Float32(x::Sherlog32) = x.val
 Base.Float16(x::Sherlog32) = Float16(x.val)
 
-Sherlog32(x::AbstractFloat) = Sherlog32{Float16}(x)
-Sherlog32(x::Integer) = Sherlog32{Float16}(Float32(x))
+# otherwise conversion to itself is ambigious
+Sherlog32(x::Sherlog32) = x
 
-Base.oneunit(::Type{Sherlog32{T}}) where {T<:AbstractFloat} = Sherlog32{T}(1)
+# generator functions from Float, Int and Bool
+Sherlog32(x::AbstractFloat) = Sherlog32{Float16,1}(x)   # use Float16 and logbook #1 as standard
+Sherlog32{T}(x::AbstractFloat) where T = Sherlog32{T,1}(x)      # use logbook #1 if no logbook provided
+Sherlog32(x::Integer) = Sherlog32{Float16,1}(x)           # same for integers
+Sherlog32{T}(x::Integer) where T = Sherlog32{T,1}(x)
+Sherlog32{T}(x::Bool) where T = if x Sherlog32{T,1}(1) else Sherlog32{T,1}(0) end
 
-Base.promote_rule(::Type{Int64},::Type{Sherlog32{T}}) where T = Sherlog32
-Base.promote_rule(::Type{Int32},::Type{Sherlog32{T}}) where T = Sherlog32
-Base.promote_rule(::Type{Int16},::Type{Sherlog32{T}}) where T = Sherlog32
+Base.promote_rule(::Type{Int64},::Type{Sherlog32{T,i}}) where {T,i} = Sherlog32{T,i}
+Base.promote_rule(::Type{Int32},::Type{Sherlog32{T,i}}) where {T,i} = Sherlog32{T,i}
+Base.promote_rule(::Type{Int16},::Type{Sherlog32{T,i}}) where {T,i} = Sherlog32{T,i}
 
-Base.promote_rule(::Type{Float64},::Type{Sherlog32{T}}) where T = Sherlog32
-Base.promote_rule(::Type{Float32},::Type{Sherlog32{T}}) where T = Sherlog32
-Base.promote_rule(::Type{Float16},::Type{Sherlog32{T}}) where T = Sherlog32
+Base.promote_rule(::Type{Float64},::Type{Sherlog32{T,i}}) where {T,i} = Sherlog32{T,i}
+Base.promote_rule(::Type{Float32},::Type{Sherlog32{T,i}}) where {T,i} = Sherlog32{T,i}
+Base.promote_rule(::Type{Float16},::Type{Sherlog32{T,i}}) where {T,i} = Sherlog32{T,i}
 
-bitstring(x::Sherlog32) = bitstring(x.val)
-Base.show(io::IO,x::Sherlog32) = print(io,string(x.val))
+Base.bitstring(x::Sherlog32) = bitstring(x.val)
+Base.show(io::IO,x::Sherlog32) = print(io,"Sherlog32(",string(x.val),")")
 
-Base.eps(::Type{Sherlog32{T}}) where {T<:AbstractFloat} = eps(Float32)
+Base.eps(::Type{Sherlog32}) = eps(Float64)
+Base.eps(x::Sherlog32) = eps(x.val)
 
-function +(x::Sherlog32{T},y::Sherlog32{T}) where T
+Base.typemin(::Sherlog32{T,i}) where {T,i} = Sherlog32{T,i}(typemin(Float64))
+Base.typemax(::Sherlog32{T,i}) where {T,i} = Sherlog32{T,i}(typemax(Float64))
+Base.floatmin(::Sherlog32{T,i}) where {T,i} = Sherlog32{T,i}(floatmin(Float64))
+Base.floatmax(::Sherlog32{T,i}) where {T,i} = Sherlog32{T,i}(floatmax(Float64))
+Base.precision(::Sherlog32{T,i}) where {T,i} = Sherlog32{T,i}(precision(Float64))
+
+-(x::Sherlog32{T,i}) where {T,i} = Sherlog32{T,i}(-x.val)
+
+function +(x::Sherlog32{T,i},y::Sherlog32{T,i}) where {T,i}
     r = x.val + y.val
-    logit(T,r)
-    return Sherlog32{T}(r)
+    log_it(T,r,i)
+    return Sherlog32{T,i}(r)
 end
 
-function -(x::Sherlog32{T},y::Sherlog32{T}) where T
+function -(x::Sherlog32{T,i},y::Sherlog32{T,i}) where {T,i}
     r = x.val - y.val
-    logit(T,r)
-    return Sherlog32{T}(r)
+    log_it(T,r,i)
+    return Sherlog32{T,i}(r)
 end
 
-function *(x::Sherlog32{T},y::Sherlog32{T}) where T
+function *(x::Sherlog32{T,i},y::Sherlog32{T,i}) where {T,i}
     r = x.val * y.val
-    logit(T,r)
-    return Sherlog32{T}(r)
+    log_it(T,r,i)
+    return Sherlog32{T,i}(r)
 end
 
-function /(x::Sherlog32{T},y::Sherlog32{T}) where T
+function /(x::Sherlog32{T,i},y::Sherlog32{T,i}) where {T,i}
     r = x.val / y.val
-    logit(T,r)
-    return Sherlog32{T}(r)
+    log_it(T,r,i)
+    return Sherlog32{T,i}(r)
+end
+
+function ^(x::Sherlog32{T,i},y::Sherlog32{T,i}) where {T,i}
+    r = x.val ^ y.val
+    log_it(T,r,i)
+    return Sherlog32{T,i}(r)
 end
 
 for O in ( :(-), :(+),
@@ -66,16 +87,16 @@ for O in ( :(-), :(+),
            :asind, :acosd, :atand, :acscd, :asecd, :acotd
           )
     @eval begin
-        function Base.$O(x::Sherlog32{T}) where T
+        function Base.$O(x::Sherlog32{T,i}) where {T,i}
             r = $O(x.val)
-            logit(T,r)
-            return Sherlog32{T}(r)
+            log_it(T,r,i)
+            return Sherlog32{T,i}(r)
         end
     end
 end
 
 for O in ( :(<), :(<=))
     @eval begin
-        Base.$O(x::Sherlog32{T}, y::Sherlog32{T}) where T = $O(x.val, y.val)
+        Base.$O(x::Sherlog32, y::Sherlog32) = $O(x.val, y.val)
     end
 end
