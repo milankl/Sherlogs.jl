@@ -24,18 +24,10 @@ julia> using Sherlogs
 julia> A = Sherlog64.(rand(1000,1000));
 julia> b = Sherlog64.(rand(1000));
 julia> x = A\b;
-julia> lb = return_logbook()
-65536-element Array{UInt64,1}:
- 0x00000000000004cf
- 0x0000000000000076
- 0x00000000000000f9
- 0x000000000000010e
- 0x0000000000000127
- 0x00000000000000fb
- 0x000000000000010f
-                  ⋮
+julia> lb = get_logbook()
+65536-element LogBook(1091, 192, 234, 181, 206, … , 0, 0, 0, 0, 0, 0)
 ```
-`lb` is now a Float16 (by default) bitpattern histogram. This tells us for example that  0 - the zero bitpattern `0x00...00` (i.e. the first entry of `lb`) occured `0x04cf` = 1231 times in the LU decomposition (which is used in the \\-operation). Use `return_logbook()` to retrieve the bitpattern histogram, use `reset_logbook()` to set the counters back to 0. Other 16bit number formats that are used as bins for the histogram can be used by specifying the parametric type `Sherlog64{T}`.
+`lb` is now a Float16 (by default) bitpattern histogram `LogBook`. This tells us for example that  0 - the zero bitpattern `0x00...00` (i.e. the first entry of `lb`) occured 1091 times in the LU decomposition (which is used in the \\-operation). Use `get_logbook()` to retrieve the `LogBook`, use `reset_logbook()` to set the counters back to 0. Other 16bit number formats that are used as bins for the histogram can be used by specifying the parametric type `Sherlog64{T,i}`. The second parameter `i` (in 1:32) is an integer that specifies which logbook to use. 
 
 # Example bitpattern histogram
 
@@ -48,20 +40,18 @@ The x-axis is ranging from bitpattern `0x0000` to `0xffff` but for readability r
 
 Logging the arithmetic results comes with overhead (the allocations are just preallocations).
 ```julia
-julia> using BenchmarkTools
-julia> @btime L96(Float64,N=100000);
-  32.224 ms (200021 allocations: 97.66 MiB)
-julia> @btime L96(Sherlog64,N=100000);
-  1.184 s (200021 allocations: 97.66 MiB)
+julia> using BenchmarkTools, Lorenz96, BFloat16s
+julia> @btime L96(Float32,N=100000);
+  26.321 ms (200023 allocations: 97.66 MiB)
+julia> @btime L96(Sherlog32{BFloat16,1},N=100000);
+  346.052 ms (200023 allocations: 97.66 MiB)
+julia> @btime L96(Sherlog32{Float16,1},N=100000);
+  1.098 s (200023 allocations: 97.66 MiB)
 ```
-which depends on the number system used for binning
-```julia
-julia> using SoftPosit
-julia> @btime L96(Sherlog64{Posit16},N=100000);
-  9.322 s (200021 allocations: 97.66 MiB)
-```
+which depends on the number system used for binning.
 
 # Installation
+Not registered yet, therefore do
 ```julia
-] add https://github.com/milankl/Sherlogs.jl
+julia> ] add https://github.com/milankl/Sherlogs.jl
 ```
