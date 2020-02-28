@@ -34,9 +34,24 @@ set_logbooks(T::DataType) = for id in 1:nlogbooks set_logbook(T,id) end
 
 """Count arithmetic result in logbook."""
 function log_it(::Type{T},x::AbstractFloat,id::Int) where {T<:AbstractFloat}
-    logbooks[id].logbook[reinterpret(UInt16,T(x)) + 1] += 1
+    @inbounds logbooks[id].logbook[reinterpret(UInt16,T(x)) + 1] += 1
 end
 
 Base.sum(x::LogBook)::Int64 = sum(x.logbook)
 entropy(x::LogBook,b::Real) = entropy(x.logbook/sum(x),b)
 entropy(x::LogBook) = entropy(x.logbook/sum(x))
+
+function Base.show(io::IO,x::LogBook)
+    n = length(x.logbook)
+    if n > 10
+        print(io,"$n-element LogBook(")
+        [print(io,string(Int(i)),", ") for i in x.logbook[1:5]]
+        print(io,"… , ")
+        [print(io,string(Int(i)),", ") for i in x.logbook[end-5:end-1]]
+        print(io,string(Int(x.logbook[end])),")")
+    else
+        print(io,"$n-element LogBook(")
+        [print(io,string(Int(i)),", ") for i in x.logbook[1:end-1]]
+        print(io,string(Int(x.logbook[end])),")")
+    end
+end

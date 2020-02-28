@@ -41,8 +41,6 @@ Base.floatmin(::Sherlog16{T,i}) where {T,i} = Sherlog16{T,i}(floatmin(T))
 Base.floatmax(::Sherlog16{T,i}) where {T,i} = Sherlog16{T,i}(floatmax(T))
 Base.precision(::Sherlog16{T,i}) where {T,i} = Sherlog16{T,i}(precision(T))
 
--(x::Sherlog16{T,i}) where {T,i} = Sherlog16{T,i}(-x.val)
-
 function +(x::Sherlog16{T,i},y::Sherlog16{T,i}) where {T,i}
     r = x.val + y.val
     log_it(T,r,i)

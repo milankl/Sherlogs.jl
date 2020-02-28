@@ -43,8 +43,6 @@ Base.floatmin(::Sherlog64{T,i}) where {T,i} = Sherlog64{T,i}(floatmin(Float64))
 Base.floatmax(::Sherlog64{T,i}) where {T,i} = Sherlog64{T,i}(floatmax(Float64))
 Base.precision(::Sherlog64{T,i}) where {T,i} = Sherlog64{T,i}(precision(Float64))
 
--(x::Sherlog64{T,i}) where {T,i} = Sherlog64{T,i}(-x.val)
-
 function +(x::Sherlog64{T,i},y::Sherlog64{T,i}) where {T,i}
     r = x.val + y.val
     log_it(T,r,i)
