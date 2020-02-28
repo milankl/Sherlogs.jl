@@ -101,7 +101,7 @@ end
     # A SINGLE ENTRY IN THE LOGBOOK
     reset_logbook()
     Sherlog64(0)+Sherlog64(0)
-    lb = return_logbook()
+    lb = get_logbook()
     @test 1 == sum(lb)
 
     # N ENTRIES IN THE LOGBOOK
@@ -110,7 +110,7 @@ end
     for i in 1:n
         a + randn(Float64)         # promotion included
     end
-    lb = return_logbook()
+    lb = get_logbook()
     @test n == sum(lb)
 end
 
@@ -119,7 +119,7 @@ end
     # A SINGLE ENTRY IN THE LOGBOOK
     reset_logbook()
     Sherlog32(0)+Sherlog32(0)
-    lb = return_logbook()
+    lb = get_logbook()
     @test 1 == sum(lb)
 
     # N ENTRIES IN THE LOGBOOK
@@ -128,7 +128,7 @@ end
     for i in 1:n
         a + randn(Float32)         # promotion included
     end
-    lb = return_logbook()
+    lb = get_logbook()
     @test n == sum(lb)
 end
 
@@ -137,7 +137,7 @@ end
     # A SINGLE ENTRY IN THE LOGBOOK
     reset_logbook()
     Sherlog16(0)+Sherlog16(0)
-    lb = return_logbook()
+    lb = get_logbook()
     @test 1 == sum(lb)
 
     # N ENTRIES IN THE LOGBOOK
@@ -146,7 +146,7 @@ end
     for i in 1:n
         a + randn(Float16)         # promotion included
     end
-    lb = return_logbook()
+    lb = get_logbook()
     @test n == sum(lb)
 end
 
