@@ -32,7 +32,7 @@ Base.promote_rule(::Type{Float16},::Type{Sherlog16{T,i}}) where {T,i} = Sherlog1
 Base.bitstring(x::Sherlog16) = bitstring(x.val)
 Base.show(io::IO,x::Sherlog16) = print(io,"Sherlog16(",string(x.val),")")
 
-Base.eps(::Type{Sherlog16}) = eps(Float64)
+Base.eps(::Type{Sherlog16{T,i}}) where {T,i} = eps(Float64)
 Base.eps(x::Sherlog16) = eps(x.val)
 
 Base.typemin(::Sherlog16{T,i}) where {T,i} = Sherlog16{T,i}(typemin(T))
