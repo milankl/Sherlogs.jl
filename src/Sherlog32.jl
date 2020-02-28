@@ -41,7 +41,6 @@ Base.floatmin(::Sherlog32{T,i}) where {T,i} = Sherlog32{T,i}(floatmin(Float32))
 Base.floatmax(::Sherlog32{T,i}) where {T,i} = Sherlog32{T,i}(floatmax(Float32))
 Base.precision(::Sherlog32{T,i}) where {T,i} = Sherlog32{T,i}(precision(Float32))
 
--(x::Sherlog32{T,i}) where {T,i} = Sherlog32{T,i}(-x.val)
 
 function +(x::Sherlog32{T,i},y::Sherlog32{T,i}) where {T,i}
     r = x.val + y.val
