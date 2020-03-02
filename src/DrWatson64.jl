@@ -12,42 +12,28 @@ Base.Int64(x::DrWatson64) = Int64(x.val)
 Base.Int32(x::DrWatson64) = Int32(x.val)
 Base.Int16(x::DrWatson64) = Int16(x.val)
 
-# otherwise conversion to itself is ambigious
+# conversion among DrWatsons
 DrWatson64{f}(x::DrWatson64) where f = DrWatson64{f}(x.val)
 DrWatson64(x::DrWatson64{f}) where {f} = DrWatson64{f}(x.val)
 
-# generator functions from Float, Int and Bool
-DrWatson64(x::AbstractFloat) = Sherlog64{Float16,1}(x)   # use Float16 and logbook #1 as standard
-Sherlog64{T}(x::AbstractFloat) where T = Sherlog64{T,1}(x)      # use logbook #1 if no logbook provided
-Sherlog64(x::Integer) = Sherlog64{Float16,1}(x)           # same for integers
-Sherlog64{T}(x::Integer) where T = Sherlog64{T,1}(x)
-Sherlog64{T}(x::Bool) where T = if x Sherlog64{T,1}(1) else Sherlog64{T,1}(0) end
+Base.promote_rule(::Type{Int64},::Type{DrWatson64{f}}) where f = DrWatson64{f}
+Base.promote_rule(::Type{Int32},::Type{DrWatson64{f}}) where f = DrWatson64{f}
+Base.promote_rule(::Type{Int16},::Type{DrWatson64{f}}) where f = DrWatson64{f}
 
-Base.promote_rule(::Type{Int64},::Type{Sherlog64{T,i}}) where {T,i} = Sherlog64{T,i}
-Base.promote_rule(::Type{Int32},::Type{Sherlog64{T,i}}) where {T,i} = Sherlog64{T,i}
-Base.promote_rule(::Type{Int16},::Type{Sherlog64{T,i}}) where {T,i} = Sherlog64{T,i}
+Base.promote_rule(::Type{Float64},::Type{DrWatson64{f}}) where f = DrWatson64{f}
+Base.promote_rule(::Type{Float32},::Type{DrWatson64{f}}) where f = DrWatson64{f}
+Base.promote_rule(::Type{Float16},::Type{DrWatson64{f}}) where f = DrWatson64{f}
 
-Base.promote_rule(::Type{Float64},::Type{Sherlog64{T,i}}) where {T,i} = Sherlog64{T,i}
-Base.promote_rule(::Type{Float32},::Type{Sherlog64{T,i}}) where {T,i} = Sherlog64{T,i}
-Base.promote_rule(::Type{Float16},::Type{Sherlog64{T,i}}) where {T,i} = Sherlog64{T,i}
+Base.bitstring(x::DrWatson64) = bitstring(x.val)
 
-Base.bitstring(x::Sherlog64) = bitstring(x.val)
-Base.show(io::IO,x::Sherlog64) = print(io,"Sherlog64(",string(x.val),")")
+Base.eps(::Type{DrWatson64{f}}) where f = eps(Float64)
+Base.eps(x::DrWatson64) = eps(x.val)
 
-Base.eps(::Type{Sherlog64{T,i}}) where {T,i} = eps(Float64)
-Base.eps(x::Sherlog64) = eps(x.val)
-
-Base.typemin(::Sherlog64{T,i}) where {T,i} = Sherlog64{T,i}(typemin(Float64))
-Base.typemax(::Sherlog64{T,i}) where {T,i} = Sherlog64{T,i}(typemax(Float64))
-Base.floatmin(::Sherlog64{T,i}) where {T,i} = Sherlog64{T,i}(floatmin(Float64))
-Base.floatmax(::Sherlog64{T,i}) where {T,i} = Sherlog64{T,i}(floatmax(Float64))
-Base.precision(::Sherlog64{T,i}) where {T,i} = Sherlog64{T,i}(precision(Float64))
-
-function +(x::Sherlog64{T,i},y::Sherlog64{T,i}) where {T,i}
-    r = x.val + y.val
-    log_it(T,r,i)
-    return Sherlog64{T,i}(r)
-end
+Base.typemin(::DrWatson64{f}) where f = DrWatson64{f}(typemin(Float64))
+Base.typemax(::DrWatson64{f}) where f = DrWatson64{f}(typemax(Float64))
+Base.floatmin(::DrWatson64{f}) where f = DrWatson64{f}(floatmin(Float64))
+Base.floatmax(::DrWatson64{f}) where f = DrWatson64{f}(floatmax(Float64))
+Base.precision(::DrWatson64{f}) where f = DrWatson64{f}(precision(Float64))
 
 function +(x::DrWatson64{f},y::DrWatson64{f}) where f
     r = x.val + y.val
@@ -55,29 +41,28 @@ function +(x::DrWatson64{f},y::DrWatson64{f}) where f
     return DrWatson64{f}(r)
 end
 
-
-function -(x::Sherlog64{T,i},y::Sherlog64{T,i}) where {T,i}
+function -(x::DrWatson64{f},y::DrWatson64{f}) where f
     r = x.val - y.val
-    log_it(T,r,i)
-    return Sherlog64{T,i}(r)
+    scent(f,r)
+    return DrWatson64{f}(r)
 end
 
-function *(x::Sherlog64{T,i},y::Sherlog64{T,i}) where {T,i}
+function *(x::DrWatson64{f},y::DrWatson64{f}) where f
     r = x.val * y.val
-    log_it(T,r,i)
-    return Sherlog64{T,i}(r)
+    scent(f,r)
+    return DrWatson64{f}(r)
 end
 
-function /(x::Sherlog64{T,i},y::Sherlog64{T,i}) where {T,i}
+function /(x::DrWatson64{f},y::DrWatson64{f}) where f
     r = x.val / y.val
-    log_it(T,r,i)
-    return Sherlog64{T,i}(r)
+    scent(f,r)
+    return DrWatson64{f}(r)
 end
 
-function ^(x::Sherlog64{T,i},y::Sherlog64{T,i}) where {T,i}
+function ^(x::DrWatson64{f},y::DrWatson64{f}) where f
     r = x.val ^ y.val
-    log_it(T,r,i)
-    return Sherlog64{T,i}(r)
+    scent(f,r)
+    return DrWatson64{f}(r)
 end
 
 for O in ( :(-), :(+),
@@ -97,22 +82,16 @@ for O in ( :(-), :(+),
            :asind, :acosd, :atand, :acscd, :asecd, :acotd
           )
     @eval begin
-        function Base.$O(x::Sherlog64{T,i}) where {T,i}
+        function Base.$O(x::DrWatson64{f}) where f
             r = $O(x.val)
-            log_it(T,r,i)
-            return Sherlog64{T,i}(r)
+            scent(f,r)
+            return DrWatson64{f}(r)
         end
     end
 end
 
-for O in ( :(<), :(<=))
+for O in ( :(<), :(<=))     # do not trigger scent for those
     @eval begin
-        Base.$O(x::Sherlog64, y::Sherlog64) = $O(x.val, y.val)
-    end
-end
-
-function scent(f,r::Real)
-    if f(r)
-        stacktrace()
+        Base.$O(x::DrWatson64, y::DrWatson64) = $O(x.val, y.val)
     end
 end

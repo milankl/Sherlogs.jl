@@ -4,6 +4,7 @@ module Sherlogs
             DrWatson64,DrWatson32,DrWatson16,
             LogBook,reset_logbook,reset_logbooks,
             get_logbook,get_logbooks,
+            get_stacktraces, get_st_index,
             entropy
 
     import Base: (+), (-), (*), (/), (^)
@@ -15,5 +16,6 @@ module Sherlogs
     include("Sherlog32.jl")
     include("Sherlog16.jl")
     include("DrWatson64.jl")
+    include("stacktraces.jl")
 
 end
