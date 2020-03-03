@@ -37,21 +37,36 @@ function log_it(::Type{T},x::AbstractFloat,id::Int) where {T<:AbstractFloat}
     @inbounds logbooks[id].logbook[reinterpret(UInt16,T(x)) + 1] += 1
 end
 
-Base.sum(x::LogBook)::Int64 = sum(x.logbook)
-entropy(x::LogBook,b::Real) = entropy(x.logbook/sum(x),b)
-entropy(x::LogBook) = entropy(x.logbook/sum(x))
+Base.sum(lb::LogBook)::Int64 = sum(lb.logbook)
+entropy(lb::LogBook,b::Real) = entropy(lb.logbook/sum(lb),b)
+entropy(lb::LogBook) = entropy(lb.logbook/sum(lb))
+Base.length(lb::LogBook) = length(lb.logbook)
+Base.getindex(lb::LogBook,i) = Int(getindex(lb.logbook,i))
+Base.lastindex(lb::LogBook) = Int(lb.logbook[end])
 
-function Base.show(io::IO,x::LogBook)
-    n = length(x.logbook)
+function Base.show(io::IO,lb::LogBook)
+    n = length(lb)
     if n > 10
         print(io,"$n-element LogBook(")
-        [print(io,string(Int(i)),", ") for i in x.logbook[1:5]]
+        [print(io,string(Int(i)),", ") for i in lb.logbook[1:5]]
         print(io,"… , ")
-        [print(io,string(Int(i)),", ") for i in x.logbook[end-5:end-1]]
-        print(io,string(Int(x.logbook[end])),")")
+        [print(io,string(Int(i)),", ") for i in lb.logbook[end-5:end-1]]
+        print(io,string(Int(lb.logbook[end])),")")
     else
         print(io,"$n-element LogBook(")
-        [print(io,string(Int(i)),", ") for i in x.logbook[1:end-1]]
-        print(io,string(Int(x.logbook[end])),")")
+        [print(io,string(Int(i)),", ") for i in lb.logbook[1:end-1]]
+        print(io,string(Int(lb.logbook[end])),")")
     end
+end
+
+function Base.maximum(lb::LogBook,T::DataType)
+    n_half = length(lb)÷2
+    i = n_half - findfirst(x->x>0,lb.logbook[n_half:-1:1]) + 1
+    return reinterpret(Float16,UInt16(i))
+end
+
+function Base.minimum(lb::LogBook,T::DataType)
+    n = length(lb)
+    i = n - findfirst(x->x>0,lb.logbook[n:-1:1]) + 1
+    return reinterpret(Float16,UInt16(i))
 end
