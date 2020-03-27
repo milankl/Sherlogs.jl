@@ -51,7 +51,7 @@ julia> @btime L96(Sherlog32{Float16,1},N=100000);
 which depends on the number system used for binning.
 
 # Installation
-Not registered yet, therefore do
+Sherlogs is a registered package, do
 ```julia
-julia> ] add https://github.com/milankl/Sherlogs.jl
+julia> ] add Sherlogs
 ```
