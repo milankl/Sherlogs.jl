@@ -59,14 +59,30 @@ function Base.show(io::IO,lb::LogBook)
     end
 end
 
-function Base.maximum(lb::LogBook,T::DataType)
+"""Find the largest occuring number in logbook."""
+function Base.maximum(lb::LogBook,T::DataType=Float16)
     n_half = length(lb)÷2
     i = n_half - findfirst(x->x>0,lb.logbook[n_half:-1:1]) + 1
-    return reinterpret(Float16,UInt16(i))
+    return reinterpret(T,UInt16(i))
 end
 
-function Base.minimum(lb::LogBook,T::DataType)
+"""Find the smallest occuring number in logbook."""
+function Base.minimum(lb::LogBook,T::DataType=Float16)
     n = length(lb)
     i = n - findfirst(x->x>0,lb.logbook[n:-1:1]) + 1
-    return reinterpret(Float16,UInt16(i))
+    return reinterpret(T,UInt16(i))
+end
+
+"""Sort a logbook as [-NaNs,-∞,...,-0,0,...,∞,NaNs]"""
+function Base.sort(lb::LogBook)
+    @views positives = lb.logbook[1:2^15]
+    @views negatives = lb.logbook[2^15+1:end]
+    lb_sorted = vcat(reverse(negatives),positives)
+    return LogBook(lb_sorted)
+end
+
+"""Convert a Float16/BFloat16 value to the corresponding UInt16 in a sorted logbook"""
+function uint16_sort(x::Union{Float16,BFloat16})
+    ui = reinterpret(UInt16,x)
+    return signbit(x) ? 0x8000 - (ui - 0x7fff) : ui + 0x8000
 end
