@@ -16,6 +16,8 @@ module Sherlogs
     include("Sherlog32.jl")
     include("Sherlog16.jl")
     include("DrWatson64.jl")
+    include("DrWatson32.jl")
+    include("DrWatson16.jl")
     include("stacktraces.jl")
 
 end
