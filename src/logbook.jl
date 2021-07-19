@@ -78,3 +78,17 @@ function Base.minimum(lb::LogBook{T}) where T
     i = n - findfirst(x->x>0,lb[n:-1:1])
     return reinterpret(T,UInt16(i))
 end
+
+"""Sort a logbook as [-NaNs,-∞,...,-0,0,...,∞,NaNs]"""
+function Base.sort(lb::LogBook)
+    @views positives = lb.logbook[1:2^15]
+    @views negatives = lb.logbook[2^15+1:end]
+    lb_sorted = vcat(reverse(negatives),positives)
+    return LogBook(lb_sorted)
+end
+
+"""Convert a Float16/BFloat16 value to the corresponding UInt16 in a sorted logbook"""
+function uint16_sort(x::AbstractFloat)
+    ui = reinterpret(UInt16,x)      # will trigger an error for non-16bit floats
+    return signbit(x) ? 0x8000 - (ui - 0x7fff) : ui + 0x8000
+end
