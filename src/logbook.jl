@@ -1,6 +1,9 @@
-struct LogBook
+struct LogBook{T<:AbstractFloat}              # provide the number format as T
     logbook::Array{UInt64,1}
 end
+
+# in case no type T is provided use Float16
+LogBook(lb::Array{UInt64,1}) = LogBook{Float16}(lb)
 
 const n16 = 2^16
 const nlogbooks = 32
@@ -19,7 +22,8 @@ end
 """Change the type T of logbook #id. Must be a 16bit type."""
 function set_logbook(T::DataType,id::Int=1)
     if sizeof(T) == 2   # must be a 16bit type
-        logbook_types[id] = T
+        # copy over the logbook but change type to T
+        logbooks[id] = LogBook{T}(logbooks[id].logbook)
     else
         error("$(sizeof(T)*8)bit type $T was provided but must be a 16bit type.")
     end
@@ -41,32 +45,36 @@ Base.sum(lb::LogBook)::Int64 = sum(lb.logbook)
 entropy(lb::LogBook,b::Real) = entropy(lb.logbook/sum(lb),b)
 entropy(lb::LogBook) = entropy(lb.logbook/sum(lb))
 Base.length(lb::LogBook) = length(lb.logbook)
-Base.getindex(lb::LogBook,i) = Int(getindex(lb.logbook,i))
+Base.getindex(lb::LogBook,i::Integer) = Int(getindex(lb.logbook,i))
+Base.getindex(lb::LogBook,u::UnitRange) = Int.(getindex(lb.logbook,u))
+Base.getindex(lb::LogBook,s::StepRange) = Int.(getindex(lb.logbook,s))
 Base.lastindex(lb::LogBook) = Int(lb.logbook[end])
 
-function Base.show(io::IO,lb::LogBook)
+function Base.show(io::IO,lb::LogBook{T}) where T
     n = length(lb)
     if n > 10
-        print(io,"$n-element LogBook(")
+        print(io,"$n-element LogBook{$T}(")
         [print(io,string(Int(i)),", ") for i in lb.logbook[1:5]]
         print(io,"… , ")
         [print(io,string(Int(i)),", ") for i in lb.logbook[end-5:end-1]]
         print(io,string(Int(lb.logbook[end])),")")
     else
-        print(io,"$n-element LogBook(")
+        print(io,"$n-element LogBook{$T}(")
         [print(io,string(Int(i)),", ") for i in lb.logbook[1:end-1]]
         print(io,string(Int(lb.logbook[end])),")")
     end
 end
 
-function Base.maximum(lb::LogBook,T::DataType)
+"""Find the largest number that was logged into the logbook `lb`."""
+function Base.maximum(lb::LogBook{T}) where T
     n_half = length(lb)÷2
-    i = n_half - findfirst(x->x>0,lb.logbook[n_half:-1:1]) + 1
-    return reinterpret(Float16,UInt16(i))
+    i = n_half - findfirst(x->x>0,lb[n_half:-1:1])
+    return reinterpret(T,UInt16(i))
 end
 
-function Base.minimum(lb::LogBook,T::DataType)
+"""Find the smallest number that was logged into the logbook `lb`."""
+function Base.minimum(lb::LogBook{T}) where T
     n = length(lb)
-    i = n - findfirst(x->x>0,lb.logbook[n:-1:1]) + 1
-    return reinterpret(Float16,UInt16(i))
+    i = n - findfirst(x->x>0,lb[n:-1:1])
+    return reinterpret(T,UInt16(i))
 end

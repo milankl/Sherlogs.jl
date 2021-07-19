@@ -1,7 +1,7 @@
 abstract type AbstractSherlog <: AbstractFloat end
 
-struct Sherlog64{T<:AbstractFloat,i} <: AbstractSherlog    # T is the bitpattern type for logging
-    val::Float64                                         # the value is always Float64
+struct Sherlog64{T<:AbstractFloat,i} <: AbstractSherlog    # T is the bitpattern type for logging, i the logbook id
+    val::Float64                                           # the value is always Float64
 end
 
 # conversions back from Sherlog64

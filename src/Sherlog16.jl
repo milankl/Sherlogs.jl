@@ -1,4 +1,5 @@
-struct Sherlog16{T<:AbstractFloat,i} <: AbstractSherlog     # T is the bitpattern type for logging, i is the logbook #
+# T is the bitpattern type for logging, i is the logbook number
+struct Sherlog16{T<:AbstractFloat,i} <: AbstractSherlog     
     val::T
 end
 
