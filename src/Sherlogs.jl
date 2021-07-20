@@ -4,7 +4,7 @@ module Sherlogs
             DrWatson64,DrWatson32,DrWatson16,
             LogBook,reset_logbook,reset_logbooks,
             get_logbook,get_logbooks,
-            get_stacktraces, get_st_index,
+            get_stacktrace,get_stacktraces, get_st_index,
             entropy
 
     import Base: (+), (-), (*), (/), (^)
