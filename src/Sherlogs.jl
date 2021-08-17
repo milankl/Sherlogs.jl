@@ -7,9 +7,9 @@ module Sherlogs
             get_stacktrace,get_stacktraces, get_st_index,
             entropy
 
-    import Base: +, -, *, /, ^, promote_rule
-
+    import Base: +, -, *, /, ^, promote_rule, round, rem
     import StatsBase: entropy
+    import Random: rand!
 
     include("logbook.jl")
     include("SherlogN.jl")
