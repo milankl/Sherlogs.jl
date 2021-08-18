@@ -2,12 +2,12 @@ abstract type AbstractSherlog <: AbstractFloat end
 
 for SherlogN in (:Sherlog16, :Sherlog32, :Sherlog64)
 
-@eval Float = $(Symbol("Float",string(SherlogN)[end-1:end]))
+@eval FloatN = $(Symbol("Float",string(SherlogN)[end-1:end]))
 
 @eval begin
 
 struct $SherlogN{T<:AbstractFloat,i} <: AbstractSherlog    # T is the bitpattern type for logging, i the logbook id
-    val::$Float
+    val::$FloatN
 end
 
 # conversions back from Sherlog
@@ -40,11 +40,11 @@ Base.show(io::IO,x::$SherlogN) = print(io,$SherlogN,"(",string(x.val),")")
 Base.eps(::Type{$SherlogN{T,i}}) where {T,i} = eps(Float64)
 Base.eps(x::$SherlogN) = eps(x.val)
 
-Base.typemin(::$SherlogN{T,i}) where {T,i} = $SherlogN{T,i}(typemin($Float))
-Base.typemax(::$SherlogN{T,i}) where {T,i} = $SherlogN{T,i}(typemax($Float))
-Base.floatmin(::$SherlogN{T,i}) where {T,i} = $SherlogN{T,i}(floatmin($Float))
-Base.floatmax(::$SherlogN{T,i}) where {T,i} = $SherlogN{T,i}(floatmax($Float))
-Base.precision(::$SherlogN{T,i}) where {T,i} = $SherlogN{T,i}(precision($Float))
+Base.typemin(::$SherlogN{T,i}) where {T,i} = $SherlogN{T,i}(typemin($FloatN))
+Base.typemax(::$SherlogN{T,i}) where {T,i} = $SherlogN{T,i}(typemax($FloatN))
+Base.floatmin(::$SherlogN{T,i}) where {T,i} = $SherlogN{T,i}(floatmin($FloatN))
+Base.floatmax(::$SherlogN{T,i}) where {T,i} = $SherlogN{T,i}(floatmax($FloatN))
+Base.precision(::$SherlogN{T,i}) where {T,i} = $SherlogN{T,i}(precision($FloatN))
 
 end
 
@@ -83,8 +83,8 @@ for O in (:(<), :(<=))
     @eval Base.$O(x::$SherlogN, y::$SherlogN) = $O(x.val, y.val)
 end
 
-@eval Random.rand(rng::Random.AbstractRNG, ::Random.Sampler{$SherlogN}) = convert($SherlogN,rand(rng, $Float))
-@eval Random.randn(rng::Random.AbstractRNG, ::Random.Sampler{$SherlogN}) = convert($SherlogN,randn(rng, $Float))
+@eval Random.rand(rng::Random.AbstractRNG, ::Random.Sampler{$SherlogN}) = convert($SherlogN,rand(rng, $FloatN))
+@eval Random.randn(rng::Random.AbstractRNG, ::Random.Sampler{$SherlogN}) = convert($SherlogN,randn(rng, $FloatN))
 
 @eval round(::Type{T}, x::$SherlogN) where {T<:Integer} = round(T, x.val)
 @eval rem(x::$SherlogN, y::$SherlogN) = Core.Intrinsics.rem_float(x.val, y.val)
