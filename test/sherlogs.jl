@@ -139,3 +139,38 @@ end
     @test all(A\b .≈ Sherlog16.(A)\Sherlog16.(b))
 
 end
+
+@testset "Random" begin
+
+    using Random
+
+    for SherlogN in (:Sherlog16, :Sherlog32, :Sherlog64)
+        @eval Float = $(Symbol("Float",string(SherlogN)[end-1:end]))
+        Random.seed!(1)
+        @eval A = rand($Float, 3)
+        Random.seed!(1)
+        @eval B = rand($SherlogN, 3)
+        @test A == B
+    end
+
+end
+
+@testset "round" begin
+
+    x = 4/3
+
+    for SherlogN in (:Sherlog16, :Sherlog32, :Sherlog64)
+        @eval round($x) == round($SherlogN($x)) == 1
+    end
+
+end
+
+@testset "rem" begin
+
+    x,y = 4,3
+
+    for SherlogN in (:Sherlog16, :Sherlog32, :Sherlog64)
+        @eval rem($x,$y) == rem($SherlogN($x), $SherlogN($y)) == 1
+    end
+
+end
