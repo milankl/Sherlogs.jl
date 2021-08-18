@@ -75,7 +75,7 @@ for O in (:(-), :(+),
     @eval function Base.$O(x::$SherlogN{T,i}) where {T,i}
         r = $O(x.val)
         log_it(T,r,i)
-        return Sherlog64{T,i}(r)
+        return $SherlogN{T,i}(r)
     end
 end
 
