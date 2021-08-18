@@ -83,11 +83,8 @@ for O in (:(<), :(<=))
     @eval Base.$O(x::$SherlogN, y::$SherlogN) = $O(x.val, y.val)
 end
 
-@eval function rand!(x::Array{$SherlogN})
-    for i in eachindex(x)
-        x[i] = $SherlogN.(rand($Float))
-    end
-end
+@eval Random.rand(rng::Random.AbstractRNG, ::Random.Sampler{$SherlogN}) = convert($SherlogN,rand(rng, $Float))
+@eval Random.randn(rng::Random.AbstractRNG, ::Random.Sampler{$SherlogN}) = convert($SherlogN,randn(rng, $Float))
 
 @eval round(::Type{T}, x::$SherlogN) where {T<:Integer} = round(T, x.val)
 @eval rem(x::$SherlogN, y::$SherlogN) = Core.Intrinsics.rem_float(x.val, y.val)

@@ -9,7 +9,7 @@ module Sherlogs
 
     import Base: +, -, *, /, ^, promote_rule, round, rem
     import StatsBase: entropy
-    import Random: rand!
+    import Random
 
     include("logbook.jl")
     include("SherlogN.jl")
