@@ -145,12 +145,33 @@ end
     using Random
 
     for SherlogN in (:Sherlog16, :Sherlog32, :Sherlog64)
-        @eval Float = $(Symbol("Float",string(SherlogN)[end-1:end]))
-        Random.seed!(1)
-        @eval A = rand($Float, 3)
-        Random.seed!(1)
-        @eval B = rand($SherlogN, 3)
-        @test A == B
+        @eval FloatN = $(Symbol("Float",string(SherlogN)[end-1:end]))
+
+        @eval A = Array{$FloatN}(undef, 10)
+        @eval B = Array{$SherlogN}(undef, 10)
+        rand!(A)
+        rand!(B)
+        @test A !== B
+
+        randn!(A)
+        randn!(B)
+        @test A !== B
+
+        randexp!(A)
+        randexp!(B)
+        @test A !== B
+
+        @eval A = rand($FloatN, 10)
+        @eval B = rand($SherlogN, 10)
+        @test A !== B
+
+        @eval A = randn($FloatN, 10)
+        @eval B = randn($SherlogN, 10)
+        @test A !== B
+
+        @eval A = randexp($FloatN, 10)
+        @eval B = randexp($SherlogN, 10)
+        @test A !== B
     end
 
 end

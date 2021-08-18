@@ -10,7 +10,7 @@ struct $DrWatsonN{f} <: AbstractWatson
     val::$FloatN
 end
 
-# conversions back from Sherlog64
+# conversions back from DrWatson64
 Base.Float64(x::$DrWatsonN) = Float64(x.val)
 Base.Float32(x::$DrWatsonN) = Float32(x.val)
 Base.Float16(x::$DrWatsonN) = Float16(x.val)
@@ -76,5 +76,12 @@ end
 for O in (:(<), :(<=))     # do not trigger scent for those
     @eval Base.$O(x::$DrWatsonN, y::$DrWatsonN) = $O(x.val, y.val)
 end
+
+@eval Random.rand(rng::Random.AbstractRNG, ::Random.Sampler{T}) where T<:$DrWatsonN = convert(T, rand(rng, $FloatN))
+@eval Random.randn(rng::Random.AbstractRNG, ::Type{T}) where T<:$DrWatsonN = convert(T, randn(rng, $FloatN))
+@eval Random.randexp(rng::Random.AbstractRNG, ::Type{T}) where T<:$DrWatsonN = convert(T, randexp(rng, $FloatN))
+
+@eval round(::Type{T}, x::$DrWatsonN) where {T<:Integer} = round(T, x.val)
+@eval rem(x::$DrWatsonN, y::$DrWatsonN) = Core.Intrinsics.rem_float(x.val, y.val)
 
 end
