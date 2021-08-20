@@ -7,17 +7,14 @@ module Sherlogs
             get_stacktrace,get_stacktraces, get_st_index,
             entropy
 
-    import Base: (+), (-), (*), (/), (^)
-
+    import Base: +, -, *, /, ^, promote_rule, round, rem
     import StatsBase: entropy
+    import Random
+    import Random: rand, randn, randexp
 
     include("logbook.jl")
-    include("Sherlog64.jl")
-    include("Sherlog32.jl")
-    include("Sherlog16.jl")
-    include("DrWatson64.jl")
-    include("DrWatson32.jl")
-    include("DrWatson16.jl")
+    include("SherlogN.jl")
+    include("DrWatsonN.jl")
     include("stacktraces.jl")
 
 end
